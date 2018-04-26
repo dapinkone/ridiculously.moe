@@ -1,0 +1,18 @@
+* wallhaven-like image site
+** Features:
+*** MongoDB database for image data
+**** image "fingerprint"
+**** tags 
+**** file local location
+**** filename
+**** source URL if available
+*** front end using Flask
+**** per-image details page
+**** display image thumbnails by search/tag w/links to img page
+**** recent activity page
+*** admin panel
+**** upload/removal of images
+***** auto-creation and caching of thumbnails
+**** image tagging/removal of tags
+*** rss feed
+*** json/RESTful API
