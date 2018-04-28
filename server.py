@@ -93,7 +93,7 @@ def thumbs_pg(page):
     return render_template("browse.html",
                            imgs=curr_page_imgs,
                            page=page,
-                           max_page=len(pages))
+                           max_page=len(pages)-1)
 
 
 @app.route('/<string:words>')

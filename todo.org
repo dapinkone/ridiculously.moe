@@ -10,18 +10,20 @@
 **** ✔DONE display full resolution image files
 **** per-image page for full resolution image & details
 **** ✔DONE display image thumbnails
-**** make image thumbnails clickable, route to per-img pg
+**** ✔DONE make image thumbnails clickable
 **** search via tags
 **** search by color?
 **** sort by _
 **** recent activity page?
 **** ✔DONE ability to navigate thumbnail pages via left/right arrow
-*** admin panel
+*** users:
+**** user accounts? how to handle security? yubikey? TOTP authenticator?
+***** login page
+***** admin/moderator accounts
 **** upload/removal of images
 ***** auto-creation and caching of thumbnails
 **** image tagging/removal of tags
 ***** interface for tag management
-**** user accounts? how to handle security? yubikey?
 *** rss feed
 *** json/RESTful API
 *** set up nginx 
