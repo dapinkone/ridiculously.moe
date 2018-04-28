@@ -4,24 +4,32 @@
     <title>I'm a web developer! :D</title>
     <script>
       document.onkeydown = checkKey;
-      function checkKey(e) {
-      e = e || window.event;
-      page = {{page}}
-      if (e.keyCode == '37') { // left arrow
-          window.location="/browse/" + (page - 1) 
+      function checkKey(e)
+      {
+        e = e || window.event;
+        page = {{page}}
+        if (e.keyCode == '37')
+        { // left arrow
+            window.location="/browse/" + (page - 1) 
+        }
+        else if (e.keyCode == '39')
+        { // right arrow
+            window.location="/browse/" + (page + 1)  // implicit casting is a sin :/
+        }
       }
-      else if (e.keyCode == '39') { // right arrow
-          window.location="/browse/" + (page + 1)  // implicit casting is a sin :/
-      }
-      }
-      </script>
+    </script>
+    <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    Page {{page}} / {{max_page}}<br />
-    {% for img in imgs %}
-    <a href="/img/{{img}}">
-      <img src="/img/th-{{img}}">
-    </a>
-    {% endfor %}
+  
+    <br />
+    <div class='images-div'>
+      <div class='pg-num'> Page {{page}} / {{max_page}}</div>
+      {% for img in imgs %}
+        <a href="/img/{{img}}">
+          <img src="/img/th-{{img}}">
+        </a>
+      {% endfor %}
+    </div>
   </body>
 </html>

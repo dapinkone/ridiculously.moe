@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, render_template, redirect
+from flask import Flask, send_from_directory, render_template, redirect, abort
 from jinja2 import Template
 import os
 import sys
@@ -82,7 +82,10 @@ def thumbs_pg(page):
 
     # chunk list of imgs into pages of 30 each, and select our page
     pages = safeList(imgs, 30)
-    curr_page_imgs = pages[page]
+    try:
+        curr_page_imgs = pages[page]
+    except IndexError:
+        abort(404)
 
     # forward the list of imgs into the jinja template
     # I'd rather pass in a dict, but I guess jinja2 doesn't do that?
@@ -90,3 +93,12 @@ def thumbs_pg(page):
                            imgs=curr_page_imgs,
                            page=page,
                            max_page=len(pages))
+
+
+@app.route('/<string:words>')
+def return_style(words):
+    # hacky. needs serious reconsideration to be more meta.
+    if words == 'styles.css':
+        return send_from_directory(templates_dir, 'styles.css')
+    else:
+        abort(404)

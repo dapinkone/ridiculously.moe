@@ -1,0 +1,20 @@
+.images-div {
+    display: table;
+    margin: 0 auto;
+    margin: 0 auto;
+    width: 90%;
+}
+.pg-num {
+    font-family: "Courier New", Courier, Monospace;
+
+    color: white;
+    font-size: 1.5em;
+    text-shadow: 4px 4px black;
+}
+body {
+
+    margin: 0;
+    padding: 0;
+    background-color: #444444;
+    text-align: center;
+}
