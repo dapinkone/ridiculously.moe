@@ -36,18 +36,14 @@ def mk_thumbnail(filename):
     if 'th-' in f or os.path.isfile(img_dir + 'th-' + filename):
         return   # >_> this could be nicer.
 
-    im = Image.open(filename)
+    im = Image.open(img_dir + filename)
     im.thumbnail((300, 200))
 
-    if ext in ('JPG', 'JPEG', 'PNG'):
+    if ext in allowed_formats:
         if ext == 'JPG':
             ext = 'JPEG'
-            im.save(img_dir + 'th-' + filename, ext)
-        else:
-            print('Error: tried to convert',
-                  filename, ext,
-                  'to thumbnail', file=sys.stderr
-                  )
+
+        im.save(img_dir + 'th-' + filename, ext)
         print('Converted ' + filename + ' to thumbnail.')
     else:
         print('Failed to build thumbnail: unknown file extension ' + ext,
@@ -57,11 +53,16 @@ def mk_thumbnail(filename):
 
 @app.route('/img/<filename>')
 def send_image_file(filename):
-    d = img_dir
+    if all([not os.path.isfile(img_dir + filename),
+            filename.startswith('th-'),
+            os.path.isfile(img_dir + filename[3:])
+            ]):
+        mk_thumbnail(filename[3:])
     try:
-        return send_from_directory(d, filename)
+        return send_from_directory(img_dir, filename)
     except OSError as e:
-        print(f"Error: {e} while sending /img/"+filename)
+        print(f"Error: unknown file {filename}", file=sys.stderr)
+        abort(404)
 
 
 @app.route('/browse/<string:words>')
