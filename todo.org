@@ -12,6 +12,7 @@
 **** ✔DONE display image thumbnails
 **** make image thumbnails clickable, route to per-img pg
 **** search via tags
+**** search by color?
 **** sort by _
 **** recent activity page?
 **** ✔DONE ability to navigate thumbnail pages via left/right arrow

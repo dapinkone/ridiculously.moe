@@ -64,8 +64,8 @@ def send_image_file(filename):
         print(f"Error: {e} while sending /img/"+filename)
 
 
-@app.route('/browse/')
-def redir_to_browse():
+@app.route('/browse/<string:words>')
+def redir_to_browse(words):  # maybe this will be browse-by-tag later?
     return redirect("/browse/0")
 
 
@@ -81,8 +81,12 @@ def thumbs_pg(page):
             imgs.append(img)
 
     # chunk list of imgs into pages of 30 each, and select our page
-    imgs = safeList(imgs, 30)[page]
+    pages = safeList(imgs, 30)
+    curr_page_imgs = pages[page]
 
     # forward the list of imgs into the jinja template
     # I'd rather pass in a dict, but I guess jinja2 doesn't do that?
-    return render_template("browse.html", imgs=imgs, page=page)
+    return render_template("browse.html",
+                           imgs=curr_page_imgs,
+                           page=page,
+                           max_page=len(pages))
