@@ -85,4 +85,4 @@ def thumbs_pg(page):
 
     # forward the list of imgs into the jinja template
     # I'd rather pass in a dict, but I guess jinja2 doesn't do that?
-    return render_template("browse.html", imgs=imgs)
+    return render_template("browse.html", imgs=imgs, page=page)

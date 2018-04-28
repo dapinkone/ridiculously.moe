@@ -2,6 +2,19 @@
 <html>
   <head>
     <title>I'm a web developer! :D</title>
+    <script>
+      document.onkeydown = checkKey;
+      function checkKey(e) {
+      e = e || window.event;
+      page = {{page}}
+      if (e.keyCode == '37') { // left arrow
+          window.location="/browse/" + (page - 1) 
+      }
+      else if (e.keyCode == '39') { // right arrow
+          window.location="/browse/" + (page + 1)  // implicit casting is a sin :/
+      }
+      }
+      </script>
   </head>
   <body>
     {% for img in imgs %}

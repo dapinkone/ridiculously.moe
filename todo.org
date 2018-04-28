@@ -14,6 +14,7 @@
 **** search via tags
 **** sort by _
 **** recent activity page?
+**** ✔DONE ability to navigate thumbnail pages via left/right arrow
 *** admin panel
 **** upload/removal of images
 ***** auto-creation and caching of thumbnails
