@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 flask = "*"
+pillow = "*"
+dhash = "*"
 
 [dev-packages]
 elpy = "*"

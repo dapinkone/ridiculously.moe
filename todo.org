@@ -1,18 +1,26 @@
 * wallhaven-like image site
 ** Features:
-*** MongoDB database for image data
+*** MongoDB database for image data using pymongo/motor
 **** image "fingerprint"
-**** tags 
+**** tags
 **** file local location
 **** filename
 **** source URL if available
-*** front end using Flask
-**** per-image details page
-**** display image thumbnails by search/tag w/links to img page
-**** recent activity page
+*** front end using Flask & Jinja templating
+**** ✔DONE display full resolution image files
+**** per-image page for full resolution image & details
+**** ✔DONE display image thumbnails
+**** make image thumbnails clickable, route to per-img pg
+**** search via tags
+**** sort by _
+**** recent activity page?
 *** admin panel
 **** upload/removal of images
 ***** auto-creation and caching of thumbnails
 **** image tagging/removal of tags
+***** interface for tag management
+**** user accounts? how to handle security? yubikey?
 *** rss feed
 *** json/RESTful API
+*** set up nginx 
+         
