@@ -53,16 +53,30 @@ def mk_thumbnail(filename):
 
 @app.route('/img/<filename>')
 def send_image_file(filename):
+    # if requesting a thumbnail, and one doesn't exist, make it.
     if all([not os.path.isfile(img_dir + filename),
             filename.startswith('th-'),
             os.path.isfile(img_dir + filename[3:])
             ]):
         mk_thumbnail(filename[3:])
+
     try:
         return send_from_directory(img_dir, filename)
     except OSError as e:
         print(f"Error: unknown file {filename}", file=sys.stderr)
         abort(404)
+
+
+@app.route('/wall/<img>')
+def img_specific_page(img):
+    ext = ''
+    if os.path.isfile(img_dir + img + '.jpg'):
+        ext = '.jpg'
+    if os.path.isfile(img_dir + img + '.png'):
+        ext = '.png'
+    return render_template("wall.html",
+                           img=img + ext,
+                           )
 
 
 @app.route('/browse/<string:words>')

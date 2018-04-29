@@ -1,4 +1,4 @@
-.images-div {
+.centered {
     display: table;
     margin: 0 auto;
     margin: 0 auto;
@@ -8,7 +8,7 @@
 
     color: white;
     font-size: 1.5em;
-    text-shadow: 4px 4px black;
+    text-shadow: 8px 8px 8px black;
 }
 body {
 

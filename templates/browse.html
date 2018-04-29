@@ -17,19 +17,21 @@
             window.location="/browse/" + (page + 1)  // implicit casting is a sin :/
         }
       }
+      imgs = {{imgs|safe}}
     </script>
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-  
     <br />
-    <div class='images-div'>
+    <div class='centered'>
       <div class='pg-num'> Page {{page}} / {{max_page}}</div>
-      {% for img in imgs %}
-        <a href="/img/{{img}}">
-          <img src="/img/th-{{img}}">
-        </a>
-      {% endfor %}
+      <script>
+        for(var i = 0; i < imgs.length; i++){
+          document.write("<a href='/wall/" + imgs[i] + "'>" +
+                         "<img src='/img/th-" + imgs[i] + "'></a>"
+          );
+        }
+      </script>
     </div>
   </body>
 </html>

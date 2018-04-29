@@ -7,21 +7,29 @@
 **** filename
 **** source URL if available
 *** front end using Flask & Jinja templating
-**** ✔DONE display full resolution image files
-**** per-image page for full resolution image & details
+**** per-image page
+***** ✔DONE full resolution img displayed
+***** better CSS style
+****** bug: full res image overscaled so it's too tall; requires scrolling to see bottom edge.
+***** details from db:
+****** tags
+****** resolution
 **** ✔DONE display image thumbnails
 **** ✔DONE make image thumbnails clickable
-**** search via tags
-**** search by color?
+**** search:
+***** tags
+***** color?
 **** sort by _
 **** recent activity page?
+**** random page
 **** ✔DONE ability to navigate thumbnail pages via left/right arrow
+**** navigation bar
 *** users:
 **** user accounts? how to handle security? yubikey? TOTP authenticator?
 ***** login page
 ***** admin/moderator accounts
 **** upload/removal of images
-***** auto-creation and caching of thumbnails
+***** ✔DONE auto-creation and cacheing of thumbnails on demand.
 **** image tagging/removal of tags
 ***** interface for tag management
 *** rss feed
