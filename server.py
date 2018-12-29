@@ -41,15 +41,16 @@ def send_thumb(filename):
 
 @app.route('/wall/<img>')
 def img_specific_page(img):
-    ext = ''
-    if os.path.isfile(img_dir + img + '.jpg'):
-        ext = '.jpg'
-    if os.path.isfile(img_dir + img + '.png'):
-        ext = '.png'
-    return render_template("wall.html",
-                           img=img + ext,
-                           )
+    base, _ = os.path.splitext(img)
+    if os.path.isfile(os.path.join(base + '.png')):
+        ext = 'png'
+    else:
+        ext = 'jpg'
 
+    img = base + '.' + ext
+    return render_template("wall.html",
+                           img=img,
+                           )
 
 @app.route('/search')
 def search():
