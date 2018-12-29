@@ -25,7 +25,7 @@
     <br />
     <div class='centered'>
       <form action="/search">
-        <input type="text" name="q">
+        <input type="text" name="q" value="{{q}}">
         <input type="submit" value="Submit">
       </form>
 
@@ -42,7 +42,7 @@
       <script>
         for(var i = 0; i < imgs.length; i++){
           document.write("<a href='/wall/" + imgs[i] + "'>" +
-                         "<img src='/img/th-" + imgs[i] + "'></a>"
+                         "<img src='/img/thumbs/" + imgs[i] + "'></a>"
           );
         }
       </script>

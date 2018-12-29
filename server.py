@@ -1,16 +1,18 @@
-from flask import Flask, send_from_directory, render_template, redirect, abort
+# Frontend of an imageboard like wallhaven.cc.
+# this file should outsource everything not delivering html/css.
+from flask import (
+    Flask, send_from_directory, render_template, redirect, abort, request
+    )
 from jinja2 import Template
 import os
 import sys
-from PIL import Image
-import dhash
 import json
 
-dhash.force_pil()  # force use PIL, not wand/imagemagick
 
 app = Flask(__name__)
 root = "/home/dap/projects/ridiculously.moe/"
 img_dir = root + "img/"
+thumbs_dir = img_dir + 'thumbs'
 templates_dir = root + "templates/"
 allowed_formats = ('JPG', 'JPEG', 'PNG')
 
@@ -20,48 +22,18 @@ def safeList(ids, chunk_size):
     return [ids[x:x + chunk_size] for x in range(0, len(ids), chunk_size)]
 
 
-def get_dhash(filename):
-    # given a filename, return the dhash of the image
-    with Image.open(filename) as img:
-        # adjust size for senstivity. greater size==more senstivity
-        # results of testing for dups on my collection:
-        # 215 detected @ s=8; 160@16; 160@32;
-        img_dhash = dhash.dhash_int(img, size=16)
-        return(img_dhash)
-
-
-def mk_thumbnail(filename):
-    f, ext = os.path.splitext(filename)
-    ext = ext[1:].upper()  # all my wat at '.png'
-    if 'th-' in f or os.path.isfile(img_dir + 'th-' + filename):
-        return   # >_> this could be nicer.
-
-    im = Image.open(img_dir + filename)
-    im.thumbnail((300, 200))
-
-    if ext in allowed_formats:
-        if ext == 'JPG':
-            ext = 'JPEG'
-
-        im.save(img_dir + 'th-' + filename, ext)
-        print('Converted ' + filename + ' to thumbnail.')
-    else:
-        print('Failed to build thumbnail: unknown file extension ' + ext,
-              file=sys.stderr
-              )
-
-
 @app.route('/img/<filename>')
 def send_image_file(filename):
-    # if requesting a thumbnail, and one doesn't exist, make it.
-    if all([not os.path.isfile(img_dir + filename),
-            filename.startswith('th-'),
-            os.path.isfile(img_dir + filename[3:])
-            ]):
-        mk_thumbnail(filename[3:])
-
-    try:
+    try: #requires testing. possible security issue?
         return send_from_directory(img_dir, filename)
+    except OSError as e:
+        print(f"Error: unknown file {filename}", file=sys.stderr)
+        abort(404)
+
+@app.route('/img/thumbs/<filename>') # TODO: refactor sending files.
+def send_thumb(filename):
+    try: #requires testing. possible security issue?
+        return send_from_directory(thumbs_dir, filename)
     except OSError as e:
         print(f"Error: unknown file {filename}", file=sys.stderr)
         abort(404)
@@ -79,9 +51,26 @@ def img_specific_page(img):
                            )
 
 
-@app.route('/browse/<string:words>')
-def redir_to_browse(words):  # maybe this will be browse-by-tag later?
-    return redirect("/browse/0")
+@app.route('/search')
+def search():
+    query = request.args.get('q', type= str)
+    tags_query = query.lower().split()
+    with open(os.path.join(img_dir + 'tags.json'), 'r') as db:
+        tags_db = json.load(db)
+        matching_imgs = list()
+        # [ k for k, v in tags_db if all(
+        #     tag in v for tag in tags_query)
+        # ]
+        for name, img_tags in tags_db.items():
+            if all(tag in img_tags for tag in tags_query):
+                matching_imgs.append(name + ".png")
+    return render_template("browse.html",
+                           imgs=matching_imgs,
+                           page=0,
+                           max_page=0,
+                           q=query
+    ) # gonna need to change that template.
+
 
 
 @app.route('/browse/<int:page>')
@@ -92,7 +81,7 @@ def thumbs_pg(page):
     imgs = list()
     for img in os.listdir(img_dir):
         ext = os.path.splitext(img)[-1][1:].upper()  # :( slices pls
-        if (ext in allowed_formats) and (not img.startswith('th-')):
+        if (ext in allowed_formats):
             imgs.append(img)
 
     # chunk list of imgs into pages of 30 each, and select our page
@@ -121,3 +110,6 @@ def return_style(words):
 @app.route('/') # a default drop page. TODO: add proper front page. #webdev
 def default():
     return redirect("/browse/0")
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port="5000")
