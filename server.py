@@ -108,8 +108,12 @@ def return_style(words):
         abort(404)
 
 @app.route('/') # a default drop page. TODO: add proper front page. #webdev
-def default():
-    return redirect("/browse/0")
+def index():
+    tags = set()
+    with open(os.path.join(img_dir, 'tags.json'), 'r') as tags_db:
+        for _, img_tags in json.load(tags_db).items():
+            tags.update(img_tags) # there has to be a better way ;_;
+    return render_template("index.html", tags=list(tags))
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port="5000")
