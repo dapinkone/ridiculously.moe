@@ -42,7 +42,7 @@ def send_thumb(filename):
 @app.route('/wall/<img>')
 def img_specific_page(img):
     base, _ = os.path.splitext(img)
-    if os.path.isfile(os.path.join(base + '.png')):
+    if os.path.isfile(os.path.join(img_dir, base + '.png')):
         ext = 'png'
     else:
         ext = 'jpg'
@@ -55,15 +55,13 @@ def img_specific_page(img):
 @app.route('/search')
 def search():
     query = request.args.get('q', type= str)
-    tags_query = query.lower().split()
+    tags_query = query.lower().split('+')
     with open(os.path.join(img_dir + 'tags.json'), 'r') as db:
         tags_db = json.load(db)
+        # https://i.ytimg.com/vi/MkmBNw1_jFw/maxresdefault.jpg
         matching_imgs = list()
-        # [ k for k, v in tags_db if all(
-        #     tag in v for tag in tags_query)
-        # ]
         for name, img_tags in tags_db.items():
-            if all(tag in img_tags for tag in tags_query):
+            if all(tag in {n.lower() for n in img_tags} for tag in tags_query):
                 matching_imgs.append(name + ".png")
     return render_template("browse.html",
                            imgs=matching_imgs,
