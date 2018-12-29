@@ -48,9 +48,10 @@ def img_specific_page(img):
         ext = 'jpg'
 
     img = base + '.' + ext
-    return render_template("wall.html",
-                           img=img,
-                           )
+    tags = []
+    with open(os.path.join(img_dir, 'tags.json'), 'r') as tags_db:
+        tags = json.load(tags_db)[base]
+    return render_template("wall.html", img=img, tags=tags)
 
 @app.route('/search')
 def search():

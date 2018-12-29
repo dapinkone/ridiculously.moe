@@ -6,6 +6,13 @@
   </head>
   <body>
     <div class='centered'>
+      <script>
+        tags = {{tags|safe}}
+        for(var i = 0; i < tags.length; i++) {
+            document.write("<a href='/search?q=" + tags[i] + "'>" + tags[i] + "</a>");
+        }
+        </script>
+
       <!-- <div style="background-image:url('/img/{{img}}')" class='full-pg-img'> -->
       <img src='/img/{{img}}' class='full-pg-img'>
     </div>
