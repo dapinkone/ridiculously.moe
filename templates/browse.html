@@ -10,7 +10,7 @@
         page = {{page}}
         if (e.keyCode == '37')
         { // left arrow
-            window.location="/browse/" + (page - 1) 
+            window.location="/browse/" + (page - 1)
         }
         else if (e.keyCode == '39')
         { // right arrow
@@ -24,7 +24,12 @@
   <body>
     <br />
     <div class='centered'>
-      <div class='pg-num'>
+      <form action="/search">
+        <input type="text" name="q">
+        <input type="submit" value="Submit">
+      </form>
+
+      <span class='pg-num'>
         {% if page > 0 %}
           <a href="/browse/{{page-1}}">&lt; Previous</a>
         {% endif %}
@@ -32,7 +37,8 @@
         {% if page < max_page %}
           <a href="/browse/{{page+1}}">Next &gt;</a>
         {% endif %}
-      </div>
+      </span>
+      <br />
       <script>
         for(var i = 0; i < imgs.length; i++){
           document.write("<a href='/wall/" + imgs[i] + "'>" +
