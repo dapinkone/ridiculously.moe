@@ -46,4 +46,9 @@ if __name__ == '__main__':
             if not os.path.isfile(os.path.join(img_dir, "th-" + img_filename)):
                 # we don't have a thumbnail for this one.
                 mk_thumbnail(img_dir, img_filename)
+                found_new = True
+        if found_new:
+            print('--')
+            found_new = None
+
         time.sleep(1)
