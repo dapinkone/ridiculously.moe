@@ -9,7 +9,7 @@ allowed_formats = ('JPG', 'JPEG', 'PNG')
 
 
 def mk_thumbnail(img_dir, filename):
-    f, ext = os.path.splitext(filename)
+    basename, ext = os.path.splitext(filename)
     ext = ext[1:].upper()  # all my wat at '.png'
 
     if ext.upper() in allowed_formats:
@@ -19,7 +19,7 @@ def mk_thumbnail(img_dir, filename):
         im = Image.open(os.path.join(img_dir, filename))
         im.thumbnail((300, 200))
 
-        th_fullpath = os.path.join(img_dir + "thumbs", filename)
+        th_fullpath = os.path.join(img_dir + "thumbs", basename + '.png')
 
         im.save(th_fullpath, ext)
         print('Converted ' + filename + ' to thumbnail.')
