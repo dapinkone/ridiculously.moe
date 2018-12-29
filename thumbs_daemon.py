@@ -35,6 +35,7 @@ if __name__ == '__main__':
     img_dir = '/home/dap/projects/ridiculously.moe/img/'
 
     while True:
+        found_new = None
         for img_filename in os.listdir(img_dir):
             if img_filename.startswith('th-'):  # this is already a thumbnail.
                 continue
@@ -45,8 +46,17 @@ if __name__ == '__main__':
 
             if not os.path.isfile(os.path.join(img_dir, "th-" + img_filename)):
                 # we don't have a thumbnail for this one.
-                mk_thumbnail(img_dir, img_filename)
-                found_new = True
+                try:
+                    mk_thumbnail(img_dir, img_filename)
+                    found_new = True
+                except OSError as e:
+                    # sometimes we're too fast, so the file isn't done
+                    # being written.
+                    if "not processed" in str(e):
+                        pass # >.>
+                    else:
+                        raise OSError(e)
+
         if found_new:
             print('--')
             found_new = None
