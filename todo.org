@@ -1,4 +1,5 @@
 * wallhaven-like image site
+** set up nginx
 ** Database for image data using pymongo/motor
 *** image "fingerprint"
 *** tags
@@ -7,33 +8,20 @@
 *** source URL if available
 ** front end using Flask & Jinja templating
 *** per-image page
-**** ✔DONE full resolution img displayed
 **** better CSS style
-***** ✔DONE FIXED image overscaled so it's too tall; requires scrolling to see bottom edge.
-**** details from db:
+**** display some per-image information such as:
 ***** tags
 ***** resolution
-***** details clickable->search
-**** ability to slideshow to/back through a search
-*** ✔DONE display image thumbnails
-*** ✔DONE make image thumbnails clickable
+***** click tags/resolution for a search by that tag.
+***** + for adding tags(if logged in)
 *** search:
-**** tags
-**** color?
-**** resolution
-*** sort by _
-*** recent activity page?
+**** by tags
+**** by color
+**** by resolution
 *** random page
-*** ✔DONE ability to navigate thumbnail pages via left/right arrow
 *** navigation bar
 ** users:
-*** user accounts? how to handle security? yubikey? TOTP authenticator?
-**** login page
-**** admin/moderator accounts
-*** upload/removal of images
-**** ✔DONE auto-creation and cacheing of thumbnails on demand.
-*** image tagging/removal of tags
-**** interface for tag management
-** set up nginx
-** TODO /index.html needs to be a thing
+*** login page
+** form for upload/removal of images(req login)
+** / needs to be a thing, redirect, or landing page. Something.
         
