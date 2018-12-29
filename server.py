@@ -117,3 +117,7 @@ def return_style(words):
         return send_from_directory(templates_dir, 'styles.css')
     else:
         abort(404)
+
+@app.route('/') # a default drop page. TODO: add proper front page. #webdev
+def default():
+    return redirect("/browse/0")
