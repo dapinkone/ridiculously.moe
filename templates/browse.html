@@ -24,7 +24,15 @@
   <body>
     <br />
     <div class='centered'>
-      <div class='pg-num'> Page {{page}} / {{max_page}}</div>
+      <div class='pg-num'>
+        {% if page > 0 %}
+          <a href="/browse/{{page-1}}">&lt; Previous</a>
+        {% endif %}
+        Page {{page}} / {{max_page}}
+        {% if page < max_page %}
+          <a href="/browse/{{page+1}}">Next &gt;</a>
+        {% endif %}
+      </div>
       <script>
         for(var i = 0; i < imgs.length; i++){
           document.write("<a href='/wall/" + imgs[i] + "'>" +

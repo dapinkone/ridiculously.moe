@@ -1,38 +1,39 @@
 * wallhaven-like image site
-** Features:
-*** MongoDB database for image data using pymongo/motor
-**** image "fingerprint"
-**** tags
-**** file local location
-**** filename
-**** source URL if available
-*** front end using Flask & Jinja templating
-**** per-image page
-***** ✔DONE full resolution img displayed
-***** better CSS style
-****** bug: full res image overscaled so it's too tall; requires scrolling to see bottom edge.
-***** details from db:
-****** tags
-****** resolution
-**** ✔DONE display image thumbnails
-**** ✔DONE make image thumbnails clickable
-**** search:
+** Database for image data using pymongo/motor
+*** image "fingerprint"
+*** tags
+*** file local location
+*** filename
+*** source URL if available
+** front end using Flask & Jinja templating
+*** per-image page
+**** ✔DONE full resolution img displayed
+**** better CSS style
+***** ✔DONE FIXED image overscaled so it's too tall; requires scrolling to see bottom edge.
+**** details from db:
 ***** tags
-***** color?
-**** sort by _
-**** recent activity page?
-**** random page
-**** ✔DONE ability to navigate thumbnail pages via left/right arrow
-**** navigation bar
-*** users:
-**** user accounts? how to handle security? yubikey? TOTP authenticator?
-***** login page
-***** admin/moderator accounts
-**** upload/removal of images
-***** ✔DONE auto-creation and cacheing of thumbnails on demand.
-**** image tagging/removal of tags
-***** interface for tag management
-*** rss feed
-*** json/RESTful API
-*** set up nginx 
-         
+***** resolution
+***** details clickable->search
+**** ability to slideshow to/back through a search
+*** ✔DONE display image thumbnails
+*** ✔DONE make image thumbnails clickable
+*** search:
+**** tags
+**** color?
+**** resolution
+*** sort by _
+*** recent activity page?
+*** random page
+*** ✔DONE ability to navigate thumbnail pages via left/right arrow
+*** navigation bar
+** users:
+*** user accounts? how to handle security? yubikey? TOTP authenticator?
+**** login page
+**** admin/moderator accounts
+*** upload/removal of images
+**** ✔DONE auto-creation and cacheing of thumbnails on demand.
+*** image tagging/removal of tags
+**** interface for tag management
+** set up nginx
+** TODO /index.html needs to be a thing
+        

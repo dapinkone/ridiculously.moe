@@ -1,19 +1,32 @@
 .centered {
     display: table;
-    margin: 0 auto;
-    margin: 0 auto;
+    left-margin: 0 auto;
+    right-margin: 0 auto;
+    width: 100%;
+    height: 100vh;
 }
-.pg-num {
+.pg-num {  /* formatting for /browse/ page numbers */
     font-family: "Courier New", Courier, Monospace;
-
     color: white;
     font-size: 1.5em;
     text-shadow: 8px 8px 8px black;
 }
-body {
-
+body { /* generic site-wide background settings */
     margin: 0;
     padding: 0;
     background-color: #444444;
     text-align: center;
+    height: 100%;
+}
+.full-pg-img { /* formatting for large image displayed in /wall/ */
+    /* background-position: center center; */
+    /* background-repeat: no-repeat; */
+    /* background-size: contain; */
+    /* margin: 0; */
+    /* height: 50em; */
+    object-fit: contain;
+    max-width: 97%;
+    max-height: 97%;
+    width: auto;
+    height: auto;
 }
