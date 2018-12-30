@@ -8,12 +8,13 @@
 *** source URL if available
 ** front end using Flask & Jinja templating
 *** per-image page
-**** better CSS style
-**** display some per-image information such as:
-***** tags
-***** resolution
-***** click tags/resolution for a search by that tag.
-***** + for adding tags(if logged in)
+**** +better+ CSS style
+**** tags
+**** resolution
+**** click tags/resolution for a search by that tag.
+**** + for adding tags(if logged in)
+**** needs CSS, UI design.
+
 *** search:
 **** by tags
 **** by color
@@ -23,5 +24,20 @@
 ** users:
 *** login page
 ** form for upload/removal of images(req login)
-** / needs to be a thing, redirect, or landing page. Something.
-        
+* Refactor:
+** server.py
+*** needs a more descriptive name.
+*** does not yet interface with the database.
+**** requires communication with database for
+***** upload/rm img forms
+***** search by X capability
+***** login/logout
+*** outsource new_entry procedure.
+**** mk_thumbnail should be implemented on upload, not request. Outsource.
+**** get_dhash is not used in server.py. This should be outsourced upon new_entry.
+*** looks bad. how do I web dev?
+**** front page N/A
+**** search: not yet implemented.
+
+
+
