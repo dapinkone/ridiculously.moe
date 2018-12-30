@@ -14,33 +14,36 @@ import (
 )
 
 func build_thumbnails(filename string) {
+
 	// Only do things if the file exists, rather than failing hard.
-	if _, err := os.Stat(filename); err != nil {
+	_, err := os.Stat(filename)
+	if err != nil {
 		if !os.IsNotExist(err) {
 			log.Fatal("Fatal error getting stat of thumbnail src:", err)
-		} else {
-			return
-		}
+		} //  else {
+		// 	return
+		// }
 	}
 
 	// Let's trim the input (which we expect to be full path)
 	dir, filename := filepath.Split(filename)
 	if _, err := os.Stat(dir + "thumbs"); err != nil {
-		os.Mkdir(dir+"/thumbs", 0755)
+		os.Mkdir("/tmp/thumbs", 0755)
 	}
 
 	src, err := imaging.Open(dir + filename)
 	if err != nil {
-		log.Printf("failed to open %s: %v", filename, err)
+		// log.Printf("failed to open %s: %v", filename, err)
 		return
 	}
 
 	src = imaging.Resize(src, 300, 200, imaging.Lanczos)
 
 	filename = filename[:len(filename)-3] + "png"
-	if err = imaging.Save(src, dir+"thumbs/"+filename); err != nil {
+	if err = imaging.Save(src, "/tmp/thumbs/"+filename); err != nil {
 		log.Fatalf("failed to save image: %v", err)
 	}
+
 }
 
 func diff(a, b []os.FileInfo) (out []string) {
@@ -61,11 +64,40 @@ func diff(a, b []os.FileInfo) (out []string) {
 	return out
 }
 
+type semaphore chan struct{}
+
+func (o semaphore) Lock() {
+	o <- struct{}{}
+}
+func (o semaphore) Unlock() {
+	<-o
+}
+
+func sendIt(s semaphore, f string) {
+	build_thumbnails(f)
+	// log.Print(f)
+	s.Unlock()
+}
+
 func watcher(dir string) {
+	// Use semaphore pattern to control concurrency.
+	// We open lots of files, that needs to be...restricted.
+	// TODO: Abstract away to a struct "Watcher" that combines
+	// functionality for reusing this stuff.
+	sem := make(semaphore, 100) //struct{}, 100)
+	defer close(sem)
+
 	// Begin the work.
 	base, err := os.Stat(dir)
 	if err != nil {
 		log.Fatal("Couldn't stat ", dir)
+	}
+
+	// We need a "safe" list, but contains is neat. Let's use a map
+	// whos value uses no memory :D
+	safeList := make(map[string]struct{})
+	for _, k := range []string{"png", "jpg", "jpeg"} {
+		safeList[k] = struct{}{}
 	}
 
 	// Build needed items for watching.
@@ -82,22 +114,30 @@ func watcher(dir string) {
 				dir = dir + "/"
 			}
 
-			thumbs, err := ioutil.ReadDir(dir + "thumbs")
-			if err != nil {
-				if os.IsNotExist(err) {
-					os.Mkdir(dir+"thumbs", 0755)
-				}
-			}
-
 			base, err := ioutil.ReadDir(dir)
 			if err != nil {
 				log.Fatal("Can't open base dir..")
 			}
 
+			thumbs, err := ioutil.ReadDir(dir + "thumbs")
+			if err != nil {
+				if os.IsNotExist(err) {
+					os.Mkdir("/tmp/thumbs", 0755)
+				}
+			}
+
 			if len(thumbs) != 0 {
 				new := diff(base, thumbs)
 				for _, f := range new {
-					go build_thumbnails(dir + f)
+					if _, ok := safeList[f[len(f)-3:]]; !ok {
+						// TODO: We'll have errors one day.
+						continue
+					}
+					// Use a slot.
+					sem.Lock()
+
+					// Originally was a closure.
+					go sendIt(sem, dir+f)
 				}
 			} else {
 				// NOTE: It will not generate thumbnails on first run but
@@ -105,14 +145,20 @@ func watcher(dir string) {
 				// are missing it will generate those along with the new file.
 				for _, f := range base {
 					if !f.IsDir() {
-						go build_thumbnails(dir + f.Name())
+						if _, ok := safeList[f.Name()[len(f.Name())-3:]]; !ok {
+							log.Println("DEBUG| Skipping ", f.Name())
+							// TODO: We'll have errors one day.
+							continue
+						}
+						// Use a slot.
+						sem.Lock()
+						go sendIt(sem, dir+f.Name())
 					}
 				}
 			}
 			// Change our begin time to our most recent + 1 second for leeway
 			// Any excess will be caught on next pass
 			begin = curr.ModTime().Add(time.Second)
-
 		}
 	}
 }
@@ -139,6 +185,7 @@ func main() {
 		go func(c net.Conn) {
 			// TODO: stuff here
 			scanner := bufio.NewScanner(c)
+
 			for scanner.Scan() {
 				filename := scanner.Text()
 				go build_thumbnails(filename)
