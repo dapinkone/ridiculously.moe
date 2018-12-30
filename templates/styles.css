@@ -14,7 +14,7 @@
 body { /* generic site-wide background settings */
     margin: 0;
     padding: 0;
-    background-color: #444444;
+    background-color: black; /* #093145; */
     text-align: center;
     height: 100%;
 }
@@ -31,18 +31,21 @@ body { /* generic site-wide background settings */
     height: auto;
 }
 .tag {
-    padding: 10px 10px 10px;
+    padding: 8px 13px 8px;
     font-size: 15px;
-    font-family: sans-serif;
+    font-family: segoe ui, sans-serif;
     text-decoration: none;
     cursor: pointer;
     line-height: 8pt;
-    background-color: darkgrey;
+    background-color: #107896;
     word-wrap: break-word;
     overflow-wrap: break-word;
     display: inline-block;
     margin-top: 1pt;
-    margin-bottom: 1pt;
+    margin-bottom: 3pt;
     margin-right: 1pt;
     margin-left: 1pt;
+    box-shadow: 3px 2px #EFD469;
+    border-radius: 25px;
+    color: #EFD469;
 }
