@@ -28,7 +28,7 @@ func build_thumbnails(filename string) {
 	// Let's trim the input (which we expect to be full path)
 	dir, filename := filepath.Split(filename)
 	if _, err := os.Stat(dir + "thumbs"); err != nil {
-		os.Mkdir("/tmp/thumbs", 0755)
+		os.Mkdir(dir+"thumbs", 0755)
 	}
 
 	src, err := imaging.Open(dir + filename)
@@ -40,7 +40,7 @@ func build_thumbnails(filename string) {
 	src = imaging.Resize(src, 300, 200, imaging.Lanczos)
 
 	filename = filename[:len(filename)-3] + "png"
-	if err = imaging.Save(src, "/tmp/thumbs/"+filename); err != nil {
+	if err = imaging.Save(src, dir+"thumbs/"+filename); err != nil {
 		log.Fatalf("failed to save image: %v", err)
 	}
 
@@ -122,7 +122,7 @@ func watcher(dir string) {
 			thumbs, err := ioutil.ReadDir(dir + "thumbs")
 			if err != nil {
 				if os.IsNotExist(err) {
-					os.Mkdir("/tmp/thumbs", 0755)
+					os.Mkdir(dir+"thumbs", 0755)
 				}
 			}
 
