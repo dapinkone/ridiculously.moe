@@ -58,9 +58,9 @@ body { /* generic site-wide background settings */
 }
 .large-img {
 	display: grid;
-	grid-column: 2/6;
-	object-fit: contain;
-	width: 80%;
-	height: 80%;
-	align-items: center;
+        grid-column: 2/6;
+        object-fit: contain;
+        width: 100%;
+        height: 100%;
+        justify-self: start;
 }
