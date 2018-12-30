@@ -18,7 +18,9 @@
     <br />
       <script>
         for(var i = 0; i < tags.length; i++){
-          document.write("<a href='/search?q=" + tags[i] + "'>" + tags[i]+"</a>&nbsp;");
+            document.write("<a href='/search?q=" + tags[i]
+                           + "' class='tag'>"
+                           + tags[i] + "</a>&nbsp;");
         }
       </script>
     </div>

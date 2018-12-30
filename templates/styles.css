@@ -30,3 +30,19 @@ body { /* generic site-wide background settings */
     width: auto;
     height: auto;
 }
+.tag {
+    padding: 10px 10px 10px;
+    font-size: 15px;
+    font-family: sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 8pt;
+    background-color: darkgrey;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    display: inline-block;
+    margin-top: 1pt;
+    margin-bottom: 1pt;
+    margin-right: 1pt;
+    margin-left: 1pt;
+}

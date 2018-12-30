@@ -9,7 +9,8 @@
       <script>
         tags = {{tags|safe}}
         for(var i = 0; i < tags.length; i++) {
-            document.write("<a href='/search?q=" + tags[i] + "'>" + tags[i] + "</a>");
+            document.write("<a href='/search?q=" + tags[i]
+                           + "' class='tag'>" + tags[i] + "</a>");
         }
         </script>
 
