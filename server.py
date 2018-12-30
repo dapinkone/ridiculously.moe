@@ -44,8 +44,10 @@ def img_specific_page(img):
     base, _ = os.path.splitext(img)
     if os.path.isfile(os.path.join(img_dir, base + '.png')):
         ext = 'png'
-    else:
+    elif os.path.isfile(os.path.join(img_dir, base + '.jpg')):
         ext = 'jpg'
+    else:
+        abort(404)
 
     img = base + '.' + ext
     tags = []

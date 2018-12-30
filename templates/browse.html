@@ -22,13 +22,7 @@
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <br />
-    <div class='centered'>
-      <form action="/search">
-        <input type="text" name="q" value="{{q}}">
-        <input type="submit" value="Submit">
-      </form>
-
+    {% include 'navbar.html' %}
       <span class='pg-num'>
         {% if page > 0 %}
           <a href="/browse/{{page-1}}">&lt; Previous</a>
