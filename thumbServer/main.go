@@ -31,17 +31,23 @@ func build_thumbnails(filename string) {
 		os.Mkdir(dir+"thumbs", 0755)
 	}
 
-	src, err := imaging.Open(dir + filename)
+	thumb := filename[:len(filename)-3] + "png"
+	// Only do work if it doesn't exist.
+	_, err = os.Stat(dir + "thumbs/" + thumb)
 	if err != nil {
-		// log.Printf("failed to open %s: %v", filename, err)
-		return
-	}
+		if os.IsNotExist(err) {
+			src, err := imaging.Open(dir + filename)
+			if err != nil {
+				// log.Printf("failed to open %s: %v", filename, err)
+				return
+			}
 
-	src = imaging.Resize(src, 300, 200, imaging.Lanczos)
+			src = imaging.Resize(src, 300, 200, imaging.Lanczos)
 
-	filename = filename[:len(filename)-3] + "png"
-	if err = imaging.Save(src, dir+"thumbs/"+filename); err != nil {
-		log.Fatalf("failed to save image: %v", err)
+			if err = imaging.Save(src, dir+"thumbs/"+thumb); err != nil {
+				log.Fatalf("failed to save image: %v", err)
+			}
+		}
 	}
 
 }
