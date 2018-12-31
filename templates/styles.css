@@ -7,6 +7,7 @@
 
 body { /* generic site-wide background settings */
     background-color: black; /* #093145; */
+    max-height: 90vh;
 }
 .tag {
     padding: 8px 13px 8px;
@@ -110,7 +111,8 @@ body { /* generic site-wide background settings */
         /* grid-column: 2/6; */
         object-fit: contain;
         width: 100%;
-        height: 100%;
+        display: flex;
+        align-items:flex-start;
         /*justify-self: start; */
 }
 .centered {
