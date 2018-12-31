@@ -106,6 +106,8 @@ def return_style(words):
     # hacky. needs serious reconsideration to be more meta.
     if words == 'styles.css':
         return send_from_directory(templates_dir, 'styles.css')
+    elif words == 'script.js':
+        return send_from_directory(templates_dir, 'script.js')
     else:
         abort(404)
 
