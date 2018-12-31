@@ -1,10 +1,18 @@
-<ul class='navbar'>
-  <li><a class=tag>Browse</a><a class=tag>Random</a></li>
-  <li>
+<ul class="navbar grid-box">
+  <li class="navbar_left">
+    <a href="/browse/0" class="tag">Browse</a>
+    <a href="/" class="tag">Tags</a>
+    <a href="/404" class="tag">Random</a>
+  </li>
+  <li class="navbar_center">
     <form action="/search">
-      <input type="text" name="q" value="{{q}}">
-      <input type="submit" value="Search">
+      <input type="text" name="q" class="searchbox" value="">
+      <input type="submit" class="search_button" value="Search">
     </form>
   </li>
-  <li><a class=tag>Register</a><a class=tag>Login</a></li>
+  <li class="navbar_right">
+    <a class="tag">Register</a>
+    <a class="tag">Login</a>
+  </li>
 </ul>
+<hr />

@@ -1,4 +1,4 @@
-"use strict";
+// should "use strict";
 function decodeHtmlEntities(words) {
     let n = document.createElement('div');
     n.innerHTML = words;

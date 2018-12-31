@@ -1,28 +1,19 @@
-<!doctype html>
-<html>
-  <head>
+<html><head>
     <title>I'm a web developer! :D</title>
     <link rel="stylesheet" href="/styles.css">
-<<<<<<< Updated upstream
-=======
-    <script src="/script.js>"</script>
->>>>>>> Stashed changes
+    <script src="/script.js"></script>
   </head>
   <body>
     {% include 'navbar.html' %}
-    <div class='grid-box'>
-    <ul class='sidebar'>
+
+    <div class="grid-box">
+    <ul class="sidebar">
       <script>
-        tags = {{tags|safe}};
-        for(var i = 0; i < tags.length; i++) {
-            document.write(
-                "<li><a href='/search?q=" + tags[i] + "' class='tag'>"
-                    + tags[i]
-                   +  "</a></li>");
-        }
+        tags = {{tags|safe}}
+        tagcloud(tags, document.getElementsByClassName('sidebar')[0]);
         </script>
       </ul>
-      <img src='/img/{{img}}' class='large-img'>
+      <img src="/img/{{img}}" class="large-img">
     </div>
-  </body>
-</html>
+
+</body></html>
