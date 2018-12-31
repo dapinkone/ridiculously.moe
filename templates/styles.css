@@ -7,6 +7,7 @@
 
 body { /* generic site-wide background settings */
     background-color: black; /* #093145; */
+    max-height: 90vh;
 }
 .tag {
     padding: 8px 13px 8px;
@@ -28,12 +29,13 @@ body { /* generic site-wide background settings */
     color: #EFD469;
 }
 
-.grid-box {
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-}
 
 /* navbar stuff */
+.grid-box    {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
 .navbar {
     text-align: center;
     padding: 1em 1em 1em 1em;
@@ -41,18 +43,19 @@ body { /* generic site-wide background settings */
 
 }
 .navbar ul, li {
-	list-style-type: none;
-	display: grid;
+    list-style-type: none;
+
 }
 .navbar_left {
     text-align: left;
 }
 .navbar_center {
-    grid-column: 2 / span 3;
+
+    text-align: center;
 }
 .navbar_right {
     text-align: right;
-    grid-column-start: 5;
+
 }
 .searchbox {
     padding: 8px 13px 8px;
@@ -104,12 +107,13 @@ body { /* generic site-wide background settings */
 	display: inline-block;
 }
 .large-img {
-	display: grid;
-        grid-column: 2/6;
+	/* display: grid; */
+        /* grid-column: 2/6; */
         object-fit: contain;
         width: 100%;
-        height: 100%;
-        /* justify-self: start; */
+        display: flex;
+        align-items:flex-start;
+        /*justify-self: start; */
 }
 .centered {
     text-align: center;
