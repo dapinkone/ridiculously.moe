@@ -32,8 +32,10 @@ def send_image_file(filename):
 
 @app.route('/img/thumbs/<filename>') # TODO: refactor sending files.
 def send_thumb(filename):
-    try: #requires testing. possible security issue?
-        return send_from_directory(thumbs_dir, filename)
+    try:
+        # doesn't matter. all our thumbs are png.
+        basename, _ = os.path.splitext(filename);
+        return send_from_directory(thumbs_dir, basename + '.png');
     except OSError as e:
         print(f"Error: unknown file {filename}", file=sys.stderr)
         abort(404)
