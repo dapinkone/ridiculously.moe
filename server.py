@@ -54,7 +54,9 @@ def img_specific_page(img):
     img = base + '.' + ext
     tags = []
     with open(os.path.join(img_dir, 'tags.json'), 'r') as tags_db:
-        tags = json.load(tags_db)[base]
+        tags = json.load(tags_db).get(base, None) # no entry?
+        if not tags:
+            abort(404)
     return render_template("wall.html", img=img, tags=tags)
 
 @app.route('/search')
