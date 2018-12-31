@@ -80,9 +80,10 @@ func (o semaphore) Unlock() {
 }
 
 func sendIt(s semaphore, f string) {
+	// Get a semaphore slot, do work, release it.
+	s.Lock()
+	defer s.Unlock()
 	build_thumbnails(f)
-	// log.Print(f)
-	s.Unlock()
 }
 
 func watcher(dir string) {
@@ -139,9 +140,6 @@ func watcher(dir string) {
 						// TODO: We'll have errors one day.
 						continue
 					}
-					// Use a slot.
-					sem.Lock()
-
 					// Originally was a closure.
 					go sendIt(sem, dir+f)
 				}
@@ -156,8 +154,6 @@ func watcher(dir string) {
 							// TODO: We'll have errors one day.
 							continue
 						}
-						// Use a slot.
-						sem.Lock()
 						go sendIt(sem, dir+f.Name())
 					}
 				}
