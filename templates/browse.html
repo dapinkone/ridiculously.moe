@@ -2,6 +2,7 @@
 
 <html>
   <head>
+    {% include 'header.html' %}
     <title>I'm a web developer! :D</title>
     <script>
       document.onkeydown = checkKey;
@@ -20,10 +21,10 @@
       }
       imgs = {{imgs|safe}}
     </script>
-    <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
     {% include 'navbar.html' %}
+    <div class='centered'>
       <span class='pg-num'>
         {% if page > 0 %}
           <a href="/browse/{{page-1}}">&lt; Previous</a>
@@ -34,11 +35,11 @@
         {% endif %}
       </span>
       <br />
-      <div class='centered'>
+
       <script>
         for(var i = 0; i < imgs.length; i++){
           document.write("<a href='/wall/" + imgs[i] + "'>" +
-                         "<img src='/img/thumbs/" + imgs[i] + "'></a>"
+                         "<img class='thumbnail' src='/img/thumbs/" + imgs[i] + "'></a>"
           );
         }
         </script>

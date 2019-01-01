@@ -1,17 +1,21 @@
-<ul class="columns box navbar">
-  <li class="navbar_left column level-left">
-    <a href="/browse/0" class="tag">Browse</a>
-    <a href="/" class="tag">Tags</a>
-    <a href="/404" class="tag">Random</a>
-  </li>
-  <li class="navbar_center column">
+
+<div class="columns box topbar">
+
+  <div class="column level-left">
+    <a href="/browse/0" class="button">Browse</a>
+    <a href="/" class="button">Tags</a>
+    <a href="/404" class="button">Random</a>
+  </div>
+  <div class="column centered">
     <form action="/search">
-      <input type="text" name="q" class="searchbox" value="{{q}}">
-      <input type="submit" class="search_button" value="Search">
+      <input type="text" name="q" type="text" class="input is-medium is-info"
+             value="{{q}}">
     </form>
-  </li>
-  <li class="navbar_right column level-right">
-    <a class="tag">Register</a>
-    <a class="tag">Login</a>
-  </li>
-</ul>
+  </div>
+  <div class="column narrow">
+    <div class="navbar_right">
+      <a class="button">Register</a>
+      <a class="button">Login</a>
+    </div>
+  </div>
+</div>
