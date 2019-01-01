@@ -1,4 +1,6 @@
-
+html {
+    background-color: #333; !important;
+}
 body { /* generic site-wide background settings */
     background-color: #333;
 }
