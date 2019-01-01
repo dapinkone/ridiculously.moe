@@ -7,10 +7,17 @@
     <a href="/404" class="button">Random</a>
   </div>
   <div class="column centered">
-    <form action="/search">
-      <input type="text" name="q" type="text" class="input is-medium is-info"
-             value="{{q}}">
-    </form>
+    <div class="field">
+
+      <form action="/search">
+        <div class="control has-icons-left">
+          <input type="text" name="q" type="text" class="input is-medium is-info has-icons"
+                 value="{{q}}" placeholder="Search">
+          <span class="icon is-left"><i class="fas fa-search is-medium"></i></span>
+        </div>
+      </form>
+
+    </div>
   </div>
   <div class="column narrow">
     <div class="navbar_right">
