@@ -14,6 +14,7 @@ root = "/home/dap/projects/ridiculously.moe/"
 img_dir = root + "img/"
 thumbs_dir = img_dir + 'thumbs'
 templates_dir = root + "templates/"
+css_dir = root + "css/"
 allowed_formats = ('JPG', 'JPEG', 'PNG')
 
 
@@ -103,12 +104,13 @@ def thumbs_pg(page):
                            max_page=len(pages)-1)
 
 
-@app.route('/<string:words>')
-def return_style(words):
+@app.route('/<string:filename>')
+def return_style(filename):
     # hacky. needs serious reconsideration to be more meta.
-    if words == 'styles.css':
-        return send_from_directory(templates_dir, 'styles.css')
-    elif words == 'script.js':
+    base, ext = os.path.splitext(filename)
+    if ext == '.css':
+        return send_from_directory(css_dir, filename)
+    if filename == 'script.js':
         return send_from_directory(templates_dir, 'script.js')
     else:
         abort(404)
