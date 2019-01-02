@@ -22,7 +22,7 @@ def mk_thumbnail(img_dir, filename):
         th_fullpath = os.path.join(img_dir + "thumbs", basename + '.png')
 
         im.save(th_fullpath, ext)
-        print('Converted ' + filename + ' to thumbnail.')
+        print('Converted ' + filename + ' to thumbnail.', end='\r')
     else:
         print('Failed to build thumbnail: unknown file extension ' + ext,
               file=sys.stderr
@@ -35,14 +35,14 @@ if __name__ == '__main__':
     while True:
         found_new = None
         for img_filename in os.listdir(img_dir):
-            if img_filename.startswith('th-'):  # this is already a thumbnail.
-                continue
-            img_ext = os.path.splitext(img_filename)[1][1:]
+            img_base, img_ext = os.path.splitext(img_filename)
 
             if img_ext.upper() not in allowed_formats:
                 continue  # that's not an image!
 
-            if not os.path.isfile(os.path.join(img_dir, "th-" + img_filename)):
+            if not os.path.isfile(os.path.join(img_dir,
+                                               'thumbs',
+                                               img_base + '.png')):
                 # we don't have a thumbnail for this one.
                 try:
                     mk_thumbnail(img_dir, img_filename)
@@ -51,7 +51,7 @@ if __name__ == '__main__':
                     # sometimes we're too fast, so the file isn't done
                     # being written.
                     if "not processed" in str(e):
-                        pass # >.>
+                        pass # >.> get it on the next pass.
                     else:
                         raise OSError(e)
 

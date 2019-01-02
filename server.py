@@ -14,6 +14,7 @@ root = "/home/dap/projects/ridiculously.moe/"
 img_dir = root + "img/"
 thumbs_dir = img_dir + 'thumbs'
 templates_dir = root + "templates/"
+css_dir = root + "css/"
 allowed_formats = ('JPG', 'JPEG', 'PNG')
 
 
@@ -32,8 +33,10 @@ def send_image_file(filename):
 
 @app.route('/img/thumbs/<filename>') # TODO: refactor sending files.
 def send_thumb(filename):
-    try: #requires testing. possible security issue?
-        return send_from_directory(thumbs_dir, filename)
+    try:
+        # doesn't matter. all our thumbs are png.
+        basename, _ = os.path.splitext(filename);
+        return send_from_directory(thumbs_dir, basename + '.png');
     except OSError as e:
         print(f"Error: unknown file {filename}", file=sys.stderr)
         abort(404)
@@ -52,7 +55,9 @@ def img_specific_page(img):
     img = base + '.' + ext
     tags = []
     with open(os.path.join(img_dir, 'tags.json'), 'r') as tags_db:
-        tags = json.load(tags_db)[base]
+        tags = json.load(tags_db).get(base, None) # no entry?
+        if not tags:
+            abort(404)
     return render_template("wall.html", img=img, tags=tags)
 
 @app.route('/search')
@@ -101,11 +106,14 @@ def thumbs_pg(page):
                            max_page=len(pages)-1)
 
 
-@app.route('/<string:words>')
-def return_style(words):
+@app.route('/<string:filename>')
+def return_style(filename):
     # hacky. needs serious reconsideration to be more meta.
-    if words == 'styles.css':
-        return send_from_directory(templates_dir, 'styles.css')
+    base, ext = os.path.splitext(filename)
+    if ext == '.css':
+        return send_from_directory(css_dir, filename)
+    if filename == 'script.js':
+        return send_from_directory(templates_dir, 'script.js')
     else:
         abort(404)
 
@@ -118,4 +126,5 @@ def index():
     return render_template("index.html", tags=list(tags))
 
 if __name__ == '__main__':
+    app.debug = True
     app.run(host="0.0.0.0", port="5000")

@@ -1,28 +1,22 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
+    {% include 'header.html' %}
     <title>I'm a web developer! :D</title>
     <script>
       tags = {{tags|safe}}
     </script>
-    <link rel="stylesheet" href="/styles.css">
+
   </head>
   <body>
-    <br />
-    <div class='centered'>
-      <form action="/search">
-        <input type="text" name="q" value="{{q}}">
-        <input type="submit" value="Submit">
-      </form>
-
-    <br />
-      <script>
-        for(var i = 0; i < tags.length; i++){
-            document.write("<a href='/search?q=" + tags[i]
-                           + "' class='tag'>"
-                           + tags[i] + "</a>&nbsp;");
-        }
-      </script>
+    <div class="columns">
+      <div class="column">
+        {% include 'navbar.html' %}
+        <script src='/script.js'></script>
+        <script>
+          tagcloud(tags, document.body);
+        </script>
+      </div>
     </div>
-  </body>
+</body>
 </html>
