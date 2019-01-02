@@ -47,6 +47,7 @@ func build_thumbnails(filename string) {
 			if err = imaging.Save(src, dir+"thumbs/"+thumb); err != nil {
 				log.Fatalf("failed to save image: %v", err)
 			}
+			return
 		}
 	}
 
@@ -140,8 +141,14 @@ func watcher(dir string) {
 						// TODO: We'll have errors one day.
 						continue
 					}
-					// Originally was a closure.
-					go sendIt(sem, dir+f)
+					// Only do work if it doesn't exist.
+					_, err = os.Stat(dir + "thumbs/" + f[:len(f)-3] + "png")
+					if err != nil {
+						if os.IsNotExist(err) {
+							// Originally was a closure.
+							go sendIt(sem, dir+f)
+						}
+					}
 				}
 			} else {
 				// NOTE: It will not generate thumbnails on first run but
@@ -150,7 +157,6 @@ func watcher(dir string) {
 				for _, f := range base {
 					if !f.IsDir() {
 						if _, ok := safeList[f.Name()[len(f.Name())-3:]]; !ok {
-							log.Println("DEBUG| Skipping ", f.Name())
 							// TODO: We'll have errors one day.
 							continue
 						}
