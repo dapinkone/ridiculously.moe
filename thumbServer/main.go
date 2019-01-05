@@ -3,16 +3,31 @@ package main
 import (
 	"bufio"
 	"flag"
-	// "io/ioutil"
 	"log"
 	"net"
 	"os"
 	"path/filepath"
-	// "strings"
-	// "time"
 
 	"github.com/disintegration/imaging"
 )
+
+func diff(a, b []os.FileInfo) (out []string) {
+	m := make(map[os.FileInfo]bool)
+	// Build initial state.
+	for _, item := range b {
+		m[item] = true
+	}
+
+	for _, item := range a {
+		if _, ok := m[item]; !ok {
+			if !item.IsDir() {
+				m[item] = true
+				out = append(out, item.Name())
+			}
+		}
+	}
+	return out
+}
 
 func build_thumbnails(filename string) {
 	// Only do things if the file exists, rather than failing hard.
@@ -33,33 +48,13 @@ func build_thumbnails(filename string) {
 	src, err := imaging.Open(dir + filename)
 	if err != nil {
 		log.Println("Failed to open file for image processing: ", err)
-		// log.Printf("failed to open %s: %v", filename, err)
 		return
 	}
 
-	src = imaging.Resize(src, 300, 200, imaging.Lanczos)
-
+	src = imaging.Thumbnail(src, 300, 200, imaging.Lanczos)
 	if err = imaging.Save(src, dir+"thumbs/"+thumb); err != nil {
 		log.Fatalf("failed to save image: %v", err)
 	}
-}
-
-func diff(a, b []os.FileInfo) (out []string) {
-	m := make(map[os.FileInfo]bool)
-	// Build initial state.
-	for _, item := range b {
-		m[item] = true
-	}
-
-	for _, item := range a {
-		if _, ok := m[item]; !ok {
-			if !item.IsDir() {
-				m[item] = true
-				out = append(out, item.Name())
-			}
-		}
-	}
-	return out
 }
 
 type Queue chan string
@@ -102,6 +97,7 @@ func queueHandler(q Queue, workers uint) {
 }
 
 func main() {
+	// flags
 	port := flag.String("bind", ":8767", "The binding on which to listen.")
 	max_workers := flag.Uint("workers", 25, "Set the max number of concurrently open files.")
 	flag.Parse()
@@ -125,6 +121,8 @@ func main() {
 		if err != nil {
 			log.Fatal("Socket could not accept client: ", err)
 		}
+
+		log.Println("INFO| accepted", client.RemoteAddr())
 
 		go func(c net.Conn) {
 			// TODO: stuff here
