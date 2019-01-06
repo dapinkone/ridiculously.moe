@@ -83,7 +83,7 @@ func queueHandler(q Queue, workers uint) {
 			thumb = thumb[:len(thumb)-3] + "png"
 
 			// Let's check if the thumb exists.
-			if _, err := os.Stat(dir + thumb); err != nil {
+			if _, err := os.Stat(dir + "thumbs/" + thumb); err != nil {
 				if os.IsNotExist(err) {
 					sem <- struct{}{}
 					go func() {
@@ -129,7 +129,8 @@ func main() {
 			scanner := bufio.NewScanner(c)
 
 			for scanner.Scan() {
-				queue <- scanner.Text()
+				text := scanner.Text()
+				queue <- text
 			}
 		}(client)
 	}
