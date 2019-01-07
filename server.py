@@ -29,8 +29,7 @@ class My_db:
             match_names.append(entry['image']['name'])
         return match_names
 
-    def get_img_struct(self, img_name) : # WARN TODO: sanitize?
-        print(f"Is {img_name} sanitized?")
+    def get_img_struct(self, img_name):
         return self.db.images.find_one(
             {"image.name": {"$all": [img_name]}})['image']
 
