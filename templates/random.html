@@ -1,0 +1,24 @@
+<!doctype html>
+
+<html>
+  <head>
+    {% include 'header.html' %}
+    <title>I'm a web developer! :D</title>
+    <script>
+      imgs = {{imgs|safe}}
+    </script>
+  </head>
+  <body>
+    {% include 'navbar.html' %}
+    <div class='centered'>
+      <script>
+        for(var i = 0; i < imgs.length; i++){
+          document.write("<a href='/wall/" + imgs[i] + "'>" +
+                         "<img class='thumbnail' src='/img/thumbs/" + imgs[i] + "'></a>"
+          );
+        }
+        </script>
+      </div>
+    </div>
+  </body>
+</html>

@@ -23,15 +23,20 @@ class My_db:
 
     def get_imgs_by_tag(self, q):
         result = self.db.images.find(
-            {"image.tags": {"$all": list(q)}})
+            {"tags": {"$all": list(q)}})
         match_names = list()
         for entry in result:
-            match_names.append(entry['image']['name'])
+            match_names.append(entry['name'])
         return match_names
 
     def get_img_struct(self, img_name):
         return self.db.images.find_one(
-            {"image.name": {"$all": [img_name]}})['image']
+            {"name": {"$all": [img_name]}})
+
+    def get_random_selection(self, how_many):
+        result = self.db.images.aggregate(
+            [{ "$sample": { "size": how_many }}])
+        return [entry['name'] for entry in result]
 
 mongodb = My_db()
 
@@ -133,6 +138,11 @@ def return_style(filename):
 def index():
     tags = set()
     return render_template("index.html", tags=list(tags))
+
+@app.route('/random')
+def random():
+    return render_template("random.html",
+                           imgs=mongodb.get_random_selection(15))
 
 if __name__ == '__main__':
     app.debug = True
