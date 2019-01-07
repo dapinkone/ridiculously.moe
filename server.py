@@ -6,7 +6,7 @@ from flask import (
 from jinja2 import Template
 import os
 import sys
-import json
+from pymongo import MongoClient
 
 
 app = Flask(__name__)
@@ -16,6 +16,25 @@ thumbs_dir = img_dir + 'thumbs'
 templates_dir = root + "templates/"
 css_dir = root + "css/"
 allowed_formats = ('JPG', 'JPEG', 'PNG')
+
+class My_db:
+    def __init__(self):
+        self.db = MongoClient('192.168.1.41').moe
+
+    def get_imgs_by_tag(self, q):
+        result = self.db.images.find(
+            {"image.tags": {"$all": list(q)}})
+        match_names = list()
+        for entry in result:
+            match_names.append(entry['image']['name'])
+        return match_names
+
+    def get_img_struct(self, img_name) : # WARN TODO: sanitize?
+        print(f"Is {img_name} sanitized?")
+        return self.db.images.find_one(
+            {"image.name": {"$all": [img_name]}})['image']
+
+mongodb = My_db()
 
 
 # @PatchesPrime credit code @gw2api safeList
@@ -54,25 +73,18 @@ def img_specific_page(img):
 
     img = base + '.' + ext
     tags = []
-    with open(os.path.join(img_dir, 'tags.json'), 'r') as tags_db:
-        tags = json.load(tags_db).get(base, None) # no entry?
-        if not tags:
-            abort(404)
-    return render_template("wall.html", img=img, tags=tags)
+
+    img_data = mongodb.get_img_struct(base)
+    return render_template("wall.html", img=img, tags=img_data['tags'])
 
 @app.route('/search')
 def search():
     query = request.args.get('q', type= str)
-    tags_query = query.lower().split('+')
-    with open(os.path.join(img_dir + 'tags.json'), 'r') as db:
-        tags_db = json.load(db)
-        # https://i.ytimg.com/vi/MkmBNw1_jFw/maxresdefault.jpg
-        matching_imgs = list()
-        for name, img_tags in tags_db.items():
-            if all(tag in {n.lower() for n in img_tags} for tag in tags_query):
-                matching_imgs.append(name + ".png")
+    tags_query = query.split('+')
+
+    results = mongodb.get_imgs_by_tag(tags_query)
     return render_template("browse.html",
-                           imgs=matching_imgs,
+                           imgs=results,
                            page=0,
                            max_page=0,
                            q=query
@@ -120,9 +132,6 @@ def return_style(filename):
 @app.route('/') # a default drop page. TODO: add proper front page. #webdev
 def index():
     tags = set()
-    with open(os.path.join(img_dir, 'tags.json'), 'r') as tags_db:
-        for _, img_tags in json.load(tags_db).items():
-            tags.update(img_tags) # there has to be a better way ;_;
     return render_template("index.html", tags=list(tags))
 
 if __name__ == '__main__':
