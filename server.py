@@ -99,9 +99,10 @@ def thumbs_pg(page):
 
     imgs = list()
     for img in os.listdir(img_dir):
-        ext = os.path.splitext(img)[-1][1:].upper()  # :( slices pls
-        if (ext in allowed_formats):
-            imgs.append(img)
+        img_base, ext = os.path.splitext(img)
+
+        if (ext[1:].upper() in allowed_formats):
+            imgs.append(img_base)
 
     # chunk list of imgs into pages of 30 each, and select our page
     pages = safeList(imgs, 30)
