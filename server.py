@@ -136,8 +136,10 @@ def return_style(filename):
 
 @app.route('/') # a default drop page. TODO: add proper front page. #webdev
 def index():
-    tags = set()
-    return render_template("index.html", tags=list(tags))
+    # tags = set()
+    # return render_template("index.html", tags=list(tags))
+    return redirect('/random')
+
 
 @app.route('/random')
 def random():
