@@ -9,7 +9,13 @@ import (
 	"path/filepath"
 
 	"github.com/disintegration/imaging"
+	"strings"
 )
+
+// Useful startup flags. We should make this into a config.
+var port = flag.String("bind", ":8767", "The binding on which to listen.")
+var maxWorkers = flag.Uint("workers", 25, "Set the max number of concurrently open files.")
+var thumbsDirectory = flag.String("dir", "<src>", "The directory in which to save thumbs. If <src>, use given directory/thumbs/filename.png")
 
 func diff(a, b []os.FileInfo) (out []string) {
 	m := make(map[os.FileInfo]bool)
@@ -40,8 +46,20 @@ func build_thumbnails(filename string) {
 
 	// Let's trim the input (which we expect to be full path)
 	dir, filename := filepath.Split(filename)
-	if _, err := os.Stat(dir + "thumbs"); err != nil {
-		os.Mkdir(dir+"thumbs", 0755)
+
+	// Let's not break backwards compatibility.
+	if *thumbsDirectory == "<src>" {
+		*thumbsDirectory = dir + "thumbs/"
+	}
+
+	// Add a slash to end if we need to.
+	if !strings.HasSuffix(*thumbsDirectory, "/") {
+		*thumbsDirectory += "/"
+	}
+
+	// Now we return to our regularly scheduled broadcast.
+	if _, err := os.Stat(*thumbsDirectory); err != nil {
+		os.Mkdir(*thumbsDirectory, 0755)
 	}
 
 	thumb := filename[:len(filename)-3] + "png"
@@ -52,7 +70,15 @@ func build_thumbnails(filename string) {
 	}
 
 	src = imaging.Thumbnail(src, 300, 200, imaging.Lanczos)
-	if err = imaging.Save(src, dir+"thumbs/"+thumb); err != nil {
+
+	outPath, err := filepath.Abs(*thumbsDirectory + thumb)
+	if err != nil {
+		log.Fatalf("Couldn't get absolute path of {} + {}: {}", *thumbsDirectory, thumb, err)
+	}
+
+	log.Println("Saving ", outPath)
+
+	if err = imaging.Save(src, outPath); err != nil {
 		log.Fatalf("failed to save image: %v", err)
 	}
 }
@@ -83,7 +109,7 @@ func queueHandler(q Queue, workers uint) {
 			thumb = thumb[:len(thumb)-3] + "png"
 
 			// Let's check if the thumb exists.
-			if _, err := os.Stat(dir + "thumbs/" + thumb); err != nil {
+			if _, err := os.Stat(dir + *thumbsDirectory + thumb); err != nil {
 				if os.IsNotExist(err) {
 					sem <- struct{}{}
 					go func() {
@@ -97,9 +123,6 @@ func queueHandler(q Queue, workers uint) {
 }
 
 func main() {
-	// flags
-	port := flag.String("bind", ":8767", "The binding on which to listen.")
-	max_workers := flag.Uint("workers", 25, "Set the max number of concurrently open files.")
 	flag.Parse()
 
 	// A queue doesn't have to be complex..
@@ -114,7 +137,7 @@ func main() {
 	defer sock.Close()
 
 	// TODO: Don't be such a dirty boii
-	go queueHandler(queue, *max_workers)
+	go queueHandler(queue, *maxWorkers)
 
 	for {
 		client, err := sock.Accept()
