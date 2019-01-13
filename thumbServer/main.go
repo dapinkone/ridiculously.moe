@@ -9,7 +9,13 @@ import (
 	"path/filepath"
 
 	"github.com/disintegration/imaging"
+	"strings"
 )
+
+// Useful startup flags. We should make this into a config.
+var port = flag.String("bind", ":8767", "The binding on which to listen.")
+var maxWorkers = flag.Uint("workers", 25, "Set the max number of concurrently open files.")
+var thumbsDirectory = flag.String("dir", "<src>", "The directory in which to save thumbs. If <src>, use given directory/thumbs/filename.png")
 
 func diff(a, b []os.FileInfo) (out []string) {
 	m := make(map[os.FileInfo]bool)
@@ -40,8 +46,15 @@ func build_thumbnails(filename string) {
 
 	// Let's trim the input (which we expect to be full path)
 	dir, filename := filepath.Split(filename)
-	if _, err := os.Stat(dir + "thumbs"); err != nil {
-		os.Mkdir(dir+"thumbs", 0755)
+
+	// Let's not break backwards compatibility.
+	if *thumbsDirectory == "<src>" {
+		*thumbsDirectory = dir + "thumbs/"
+	}
+
+	// Now we return to our regularly scheduled broadcast.
+	if _, err := os.Stat(*thumbsDirectory); err != nil {
+		os.Mkdir(*thumbsDirectory, 0755)
 	}
 
 	thumb := filename[:len(filename)-3] + "png"
@@ -52,7 +65,15 @@ func build_thumbnails(filename string) {
 	}
 
 	src = imaging.Thumbnail(src, 300, 200, imaging.Lanczos)
-	if err = imaging.Save(src, dir+"thumbs/"+thumb); err != nil {
+
+	outPath, err := filepath.Abs(*thumbsDirectory + thumb)
+	if err != nil {
+		log.Fatalf("Couldn't get absolute path of {} + {}: {}", *thumbsDirectory, thumb, err)
+	}
+
+	// log.Println("INFO| Saving ", outPath)
+
+	if err = imaging.Save(src, outPath); err != nil {
 		log.Fatalf("failed to save image: %v", err)
 	}
 }
@@ -75,15 +96,26 @@ func queueHandler(q Queue, workers uint) {
 		file := <-q
 		// Does the file extention match our safeList?
 		if _, ok := safeList[filepath.Ext(file)]; ok {
-			// Get directory and prepare filename for new format.
+			// Prepare filename for new format.
 			dir, thumb := filepath.Split(file)
 
 			// The library we use for build_thumbnails saves as the format of our
 			// file extention. It's been requested that we use PNG.
 			thumb = thumb[:len(thumb)-3] + "png"
 
+			// Let's not break backwards compatibility.
+			if *thumbsDirectory == "<src>" {
+				*thumbsDirectory = dir + "thumbs/"
+			}
+
+			// Get the absolute path
+			thumbnailPath, err := filepath.Abs(*thumbsDirectory + thumb)
+			if err != nil {
+				log.Fatalf("Couldn't get absolute path of {} + {}: {}", *thumbsDirectory, thumb, err)
+			}
+
 			// Let's check if the thumb exists.
-			if _, err := os.Stat(dir + "thumbs/" + thumb); err != nil {
+			if _, err := os.Stat(thumbnailPath); err != nil {
 				if os.IsNotExist(err) {
 					sem <- struct{}{}
 					go func() {
@@ -97,10 +129,12 @@ func queueHandler(q Queue, workers uint) {
 }
 
 func main() {
-	// flags
-	port := flag.String("bind", ":8767", "The binding on which to listen.")
-	max_workers := flag.Uint("workers", 25, "Set the max number of concurrently open files.")
 	flag.Parse()
+
+	// Add a slash to end if we need to.
+	if !strings.HasSuffix(*thumbsDirectory, "/") {
+		*thumbsDirectory += "/"
+	}
 
 	// A queue doesn't have to be complex..
 	queue := make(Queue)
@@ -114,7 +148,7 @@ func main() {
 	defer sock.Close()
 
 	// TODO: Don't be such a dirty boii
-	go queueHandler(queue, *max_workers)
+	go queueHandler(queue, *maxWorkers)
 
 	for {
 		client, err := sock.Accept()
