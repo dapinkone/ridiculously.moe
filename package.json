@@ -32,13 +32,13 @@
   "deprecated": false,
   "description": "Start package for Bulma",
   "devDependencies": {
-    "autoprefixer": "^7.1.5",
+    "autoprefixer": "^10.4.14",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-es2015-ie": "^6.7.0",
     "bulma": "^0.6.0",
     "node-sass": "^7.0.0",
-    "postcss-cli": "^4.1.1"
+    "postcss-cli": "^10.1.0"
   },
   "keywords": [
     "sass",
